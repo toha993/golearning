@@ -26,10 +26,10 @@ func NewMongoCollection(db *mongo.Database, collection string) *MongoCollection 
 }
 
 type Operation interface {
-	GetAll() (interface{}, error)
-	GetId(string) (interface{}, error)
+	ReadAll() (interface{}, error)
+	ReadById(string) (interface{}, error)
 	DeleteById(string) error
-	Insert(interface{}) error
+	Save(interface{}) error
 }
 
 func (r *MongoCollection) Save(data interface{}) {
@@ -41,8 +41,9 @@ func (r *MongoCollection) Save(data interface{}) {
 
 	filter := bson.M{"_id": newStruct.Id}
 
+	fmt.Println(newStruct)
 	opts := options.Update().SetUpsert(true)
-	update := bson.D{primitive.E{Key: "$set", Value: newStruct}}
+	update := bson.D{primitive.E{Key: "$set", Value: data}}
 
 	fmt.Println(update)
 	result, err := r.db.Collection(r.collection).UpdateOne(context.TODO(), filter, update, opts)
@@ -51,6 +52,17 @@ func (r *MongoCollection) Save(data interface{}) {
 		log.Fatal("Error in query")
 	}
 	fmt.Println(result)
+
+	// opts := options.Update().SetUpsert(true)
+
+	// update := bson.D{primitive.E{Key: "$set", Value: data}}
+
+	// result, err := r.db.Collection(r.collection).UpdateOne(context.TODO(), filter, update, opts)
+	// if err != nil {
+	// 	log.Fatal("Error in query")
+	// }
+	// fmt.Println(result)
+
 }
 
 func (r *MongoCollection) ReadAll() (interface{}, error) {
