@@ -12,9 +12,12 @@ func main() {
 
 	dbconfig := db.Config("_toha_Alert-DEV")
 	country := query.NewMongoCollection(dbconfig, "country")
+	currency := query.NewMongoCollection(dbconfig, "currency")
 	//readbyid function
 	// output, _ := country.ReadById("tt")
 	// fmt.Println(output)
+	output, _ := currency.ReadById("bw")
+	fmt.Println(output)
 
 	//save function
 	user := model.Country{
