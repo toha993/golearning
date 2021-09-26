@@ -8,16 +8,15 @@ import (
 )
 
 func main() {
-	fmt.Println("All ok")
 
 	dbconfig := db.Config("_toha_Alert-DEV")
+
+	//country
 	country := query.NewMongoCollection(dbconfig, "country")
-	currency := query.NewMongoCollection(dbconfig, "currency")
+
 	//readbyid function
 	// output, _ := country.ReadById("tt")
 	// fmt.Println(output)
-	output, _ := currency.ReadById("bw")
-	fmt.Println(output)
 
 	//save function
 	user := model.Country{
@@ -36,9 +35,23 @@ func main() {
 		DisplayName:   "Botswana",
 		EYDisplayName: "Botswana",
 	}
-	country.Save(user)
+	country.Save("bw", user)
+
+	//readall
+	// result, _ := country.ReadAll()
+	// fmt.Println(result)
 
 	//delete
 	//country.DeleteById("bw")
+
+	//country
+
+	//currency
+	currency := query.NewMongoCollection(dbconfig, "currency")
+
+	output, _ := currency.ReadById("bw")
+	fmt.Println(output)
+
+	//currency
 
 }

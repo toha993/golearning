@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"reflect"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -29,23 +28,16 @@ type Operation interface {
 	ReadAll() (interface{}, error)
 	ReadById(string) (interface{}, error)
 	DeleteById(string) error
-	Save(interface{}) error
+	Save(string, interface{}) error
 }
 
-func (r *MongoCollection) Save(data interface{}) {
+func (r *MongoCollection) Save(id string, data interface{}) {
 
 	ctx, cancel := context.WithTimeout(context.TODO(), 10*time.Second)
 	defer cancel() // should abandon its work after the timeout elapses.
 
-	// structuring the interface to get the id
-	// oldStruct, ok := data.(model.Country)
-	// if !ok {
-	// 	log.Fatal("Data not found")
-	// }
-	// newStruct := model.Country(oldStruct)
-
-	v := reflect.ValueOf(data)
-	id := v.Field(0).String()
+	// v := reflect.ValueOf(data)
+	// id := v.Field(0).String()
 
 	filter := bson.M{"_id": id}
 
