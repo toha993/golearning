@@ -22,15 +22,49 @@ type Country struct {
 	EYDisplayName string   `json:"eydisplayname"`
 }
 
+type User struct {
+	UserName  string `json:"UserName"`
+	FirstName string `json:"FirstName"`
+	LastName  string `json:"LastName"`
+	Email     string `json:"Email"`
+	CompanyId string `json:"CompanyId"`
+}
+
 func modeltype(c interface{}) string {
+	// v := c
 	fmt.Println(c)
-	return reflect.TypeOf(c).Elem().Name()
+	return reflect.TypeOf(c).Name()
 
 }
 
 func main() {
 
-	v := Country{}
-	fmt.Println(modeltype(&v))
+	v := Country{
+		Id:            "r2r2r23",
+		CompanyId:     "23rr",
+		ProjectId:     "2324",
+		Code:          "",
+		Name:          "Botswana",
+		ItrceCode:     "",
+		ISO3:          "",
+		ISO2:          "",
+		IRS:           "",
+		IsGroup:       false,
+		Region:        "",
+		Tags:          []string{},
+		DisplayName:   "",
+		EYDisplayName: "",
+	}
+	fmt.Println(modeltype(v))
+
+	help := User{
+		UserName:  "toha",
+		FirstName: "",
+		LastName:  "",
+		Email:     "",
+		CompanyId: "",
+	}
+	fmt.Println(modeltype(help))
+	fmt.Println(len("") == 0)
 
 }

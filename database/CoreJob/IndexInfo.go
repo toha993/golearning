@@ -5,10 +5,6 @@ import (
 	"strings"
 )
 
-var ClientIndexFormat string = "[IndexPrefix]-Client"
-var ClientIndexFormatWithCompanyId string = "[IndexPrefix]-[CompanyId]"
-var ClientIndexFormatWithDemoId string = "[IndexPrefix]-DEMO-[DemoId]"
-
 type Indexinfo struct {
 	CompanyId    string
 	ProjectId    string
@@ -16,6 +12,24 @@ type Indexinfo struct {
 	Index        string
 	Topic        string
 	Group        string
+}
+
+var ClientIndexFormat string = "[IndexPrefix]-Client"
+var ClientIndexFormatWithCompanyId string = "[IndexPrefix]-[CompanyId]"
+var ClientIndexFormatWithDemoId string = "[IndexPrefix]-DEMO-[DemoId]"
+var _companyIndexFormat string
+
+func CompanyIndexFormat() string {
+	if len(_companyIndexFormat) == 0 {
+		_companyIndexFormat = ClientIndexFormat
+	}
+	return _companyIndexFormat
+}
+
+func getCompanyIndex(companyId string) string {
+	index := strings.Replace(CompanyIndexFormat(), "[IndexPrefix]", GetIndexPrefix(), -1)
+	strings.Replace(index, "[CompanyId]", companyId, -1)
+	return index
 }
 
 //index
@@ -65,12 +79,6 @@ func IndexInfo(arg ...interface{}) Indexinfo {
 	}
 
 	return Indexinfo{}
-}
-
-func getCompanyIndex(companyId string) string {
-	index := strings.Replace(ClientIndexFormat, "[IndexPrefix]", GetIndexPrefix(), -1)
-	strings.Replace(index, "[CompanyId]", companyId, -1)
-	return index
 }
 
 // func (i Indexinfo) GetIndex() string {

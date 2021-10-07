@@ -4,6 +4,8 @@ import (
 	"context"
 	"mongo-db/config"
 	core "mongo-db/corejob"
+	"reflect"
+	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -22,7 +24,7 @@ import (
 // 	}
 // }
 
-func Save(db core.Indexinfo, data interface{}, Id string) error {
+func Save(index core.Indexinfo, data interface{}, Id string) error {
 
 	filter := bson.M{"id": Id}
 	opts := options.Update().SetUpsert(true)
@@ -34,8 +36,10 @@ func Save(db core.Indexinfo, data interface{}, Id string) error {
 	if err != nil {
 		return err
 	}
+	database := index.Index
+	coll := strings.ToLower(reflect.TypeOf(data).Name())
 
-	collection := client.Database(db.Index).Collection(r.collection)
+	collection := client.Database(database).Collection(coll)
 
 	_, err = collection.UpdateOne(context.TODO(), filter, update, opts)
 

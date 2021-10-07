@@ -34,6 +34,21 @@ func GetIndexPrefix() string {
 	return os.Getenv("DevPrefix") + os.Getenv("IndexPrefix")
 }
 
+func GetDevIndex() Indexinfo {
+
+	err := godotenv.Load("dev.env")
+	if err != nil {
+		log.Fatal("error in environment file")
+	}
+
+	version := strings.ToUpper(os.Getenv("Version"))
+	index := os.Getenv("GlobalPrefix") + os.Getenv("IndexPrefix") + "-" + version
+
+	return IndexInfo(index)
+}
+
 func GetCompanyIndex() Indexinfo {
-	return Indexinfo{}
+	var userInfo = GetUserDetails()
+	var companyId = userInfo.CompanyId
+	return IndexInfo(strings.ToLower(companyId), false)
 }

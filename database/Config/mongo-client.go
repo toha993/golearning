@@ -8,19 +8,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-/* Used to create a singleton object of MongoDB client.
-Initialized and exposed through  GetMongoClient().*/
 var clientInstance *mongo.Client
 
-//Used during creation of singleton client object in GetMongoClient().
 var clientInstanceError error
 
-//Used to execute client creation procedure only once.
 var mongoOnce sync.Once
 
-//GetMongoClient - Return mongodb connection to work with
 func GetDBInstance() (*mongo.Client, error) {
-	//Perform connection creation operation only once.
 	mongoOnce.Do(func() {
 		clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 		client, err := mongo.Connect(context.TODO(), clientOptions)
