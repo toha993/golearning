@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	core "mongodbgolang/corejob"
+	query "mongodbgolang/mongodb"
 	"reflect"
 )
 
@@ -55,16 +57,20 @@ func main() {
 		DisplayName:   "",
 		EYDisplayName: "",
 	}
-	fmt.Println(modeltype(v))
+	// fmt.Println(modeltype(v))
 
-	help := User{
-		UserName:  "toha",
-		FirstName: "",
-		LastName:  "",
-		Email:     "",
-		CompanyId: "",
-	}
-	fmt.Println(modeltype(help))
-	fmt.Println(len("") == 0)
+	// help := User{
+	// 	UserName:  "toha",
+	// 	FirstName: "",
+	// 	LastName:  "",
+	// 	Email:     "",
+	// 	CompanyId: "",
+	// }
+	// fmt.Println(modeltype(help))
+	// fmt.Println(len("") == 0)
+
+	query.Save(core.GetCompanyIndex(), v, "r2r2r23")
+
+	//success
 
 }

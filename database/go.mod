@@ -1,4 +1,4 @@
-module mongo-db
+module mongodbgolang
 
 go 1.17
 
