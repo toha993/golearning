@@ -3,7 +3,7 @@ package mongodb
 import (
 	"context"
 	"mongodbgolang/config"
-	core "mongodbgolang/corejob"
+	"mongodbgolang/corelib"
 	"reflect"
 	"strings"
 
@@ -12,21 +12,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// type MongoCollection struct {
-// 	database   string
-// 	collection string
-// }
+func Save(index corelib.Indexinfo, data interface{}, id string) error {
 
-// func NewMongoCollection(database, collection string) contracts.IBulkRepositoryContext {
-// 	return &MongoCollection{
-// 		database:   database,
-// 		collection: collection,
-// 	}
-// }
-
-func Save(index core.Indexinfo, data interface{}, Id string) error {
-
-	filter := bson.M{"_id": Id}
+	filter := bson.M{"_id": id}
 	opts := options.Update().SetUpsert(true)
 
 	update := bson.D{primitive.E{Key: "$set", Value: data}}
@@ -37,86 +25,95 @@ func Save(index core.Indexinfo, data interface{}, Id string) error {
 		return err
 	}
 	database := index.Index
-	coll := strings.ToLower(reflect.TypeOf(data).Name())
+	collectionName := strings.ToLower(reflect.TypeOf(data).Name())
 
-	collection := client.Database(database).Collection(coll)
+	collection := client.Database(database).Collection(collectionName)
 
 	_, err = collection.UpdateOne(context.TODO(), filter, update, opts)
 
 	return err
 }
 
-// func Insert(data interface{}) error {
+func Insert(index corelib.Indexinfo, data interface{}) error {
 
-// 	client, err := config.GetDBInstance()
-// 	if err != nil {
-// 		return err
-// 	}
+	client, err := config.GetDBInstance()
+	if err != nil {
+		return err
+	}
+	database := index.Index
+	collectionName := strings.ToLower(reflect.TypeOf(data).Name())
 
-// 	collection := client.Database(r.database).Collection(r.collection)
-// 	_, err = collection.InsertOne(context.TODO(), data)
+	collection := client.Database(database).Collection(collectionName)
+	_, err = collection.InsertOne(context.TODO(), data)
 
-// 	if err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
-// func GetAll() (interface{}, error) {
+func GetAll(index corelib.Indexinfo, data interface{}) (interface{}, error) {
 
-// 	var result []interface{}
+	var result []interface{}
 
-// 	client, err := config.GetDBInstance()
-// 	if err != nil {
-// 		return result, err
-// 	}
+	client, err := config.GetDBInstance()
+	if err != nil {
+		return result, err
+	}
+	database := index.Index
+	collectionName := strings.ToLower(reflect.TypeOf(data).Name())
 
-// 	collection := client.Database(r.database).Collection(r.collection)
-// 	cur, err := collection.Find(context.TODO(), bson.M{})
+	collection := client.Database(database).Collection(collectionName)
+	cur, err := collection.Find(context.TODO(), bson.M{})
 
-// 	if err != nil {
-// 		return result, nil
-// 	}
+	if err != nil {
+		return result, nil
+	}
 
-// 	for cur.Next(context.TODO()) {
-// 		var elem interface{}
+	for cur.Next(context.TODO()) {
+		var elem interface{}
 
-// 		cur.Decode(&elem)
-// 		result = append(result, elem)
-// 	}
+		cur.Decode(&elem)
+		result = append(result, elem)
+	}
 
-// 	return result, nil
-// }
+	return result, nil
+}
 
-// func GetId(id string) (interface{}, error) {
-// 	var result interface{}
-// 	filter := bson.M{"id": id}
+func GetId(index corelib.Indexinfo, data interface{}, id string) (interface{}, error) {
+	var result interface{}
+	filter := bson.M{"_id": id}
 
-// 	client, err := config.GetDBInstance()
-// 	if err != nil {
-// 		return result, err
-// 	}
+	client, err := config.GetDBInstance()
+	if err != nil {
+		return result, err
+	}
 
-// 	collection := client.Database(r.database).Collection(r.collection)
-// 	err = collection.FindOne(context.TODO(), filter).Decode(&result)
+	database := index.Index
+	collectionName := strings.ToLower(reflect.TypeOf(data).Name())
 
-// 	if err != nil {
-// 		return result, err
-// 	}
+	collection := client.Database(database).Collection(collectionName)
+	err = collection.FindOne(context.TODO(), filter).Decode(&result)
 
-// 	return result, nil
-// }
+	if err != nil {
+		return result, err
+	}
 
-// func DeleteById(id string) error {
+	return result, nil
+}
 
-// 	filter := bson.M{"id": id}
+func DeleteById(index corelib.Indexinfo, data interface{}, id string) error {
 
-// 	client, err := config.GetDBInstance()
-// 	if err != nil {
-// 		return err
-// 	}
+	filter := bson.M{"_id": id}
 
-// 	collection := client.Database(r.database).Collection(r.collection)
-// 	_, err = collection.DeleteOne(context.TODO(), filter)
-// 	return err
-// }
+	client, err := config.GetDBInstance()
+	if err != nil {
+		return err
+	}
+	database := index.Index
+	collectionName := strings.ToLower(reflect.TypeOf(data).Name())
+
+	collection := client.Database(database).Collection(collectionName)
+	_, err = collection.DeleteOne(context.TODO(), filter)
+	return err
+}

@@ -2,8 +2,11 @@ package config
 
 import (
 	"context"
+	"log"
+	"os"
 	"sync"
 
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -16,7 +19,11 @@ var mongoOnce sync.Once
 
 func GetDBInstance() (*mongo.Client, error) {
 	mongoOnce.Do(func() {
-		clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+		err := godotenv.Load("dev.env")
+		if err != nil {
+			log.Fatal("error in environment file")
+		}
+		clientOptions := options.Client().ApplyURI(os.Getenv("MongodbConnection"))
 		client, err := mongo.Connect(context.TODO(), clientOptions)
 		if err != nil {
 			clientInstanceError = err
